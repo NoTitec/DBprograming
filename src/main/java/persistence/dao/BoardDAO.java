@@ -1,28 +1,21 @@
-import persistence.dao.BoardDAO;
+package persistence.dao;
+
 import persistence.dto.BoardDTO;
-import service.BoardService;
-import view.BoardView;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
-    public static void main(String[] args) {
-        BoardDAO boardDAO=new BoardDAO();//이때 한번 만들고 생성 안함 유사 싱글톤방식
-        BoardView boardView= new BoardView();
-        BoardService boardService= new BoardService(boardDAO);
-
-        //사용자가 controll에서 전체출력 요청한것 가정
-        List<BoardDTO> all= boardService.findall();
-        boardView.printAll(all);
-
-        /*Connection conn = null;
+public class BoardDAO {
+    public List<BoardDTO> findAll(){
+        Connection conn = null;
         Statement stmt = null;
-        PreparedStatement pstmt = null;
+        //PreparedStatement pstmt = null;
         ResultSet rs = null;
         String selectquery = "SELECT * FROM BOARD";
-        String insertquery = "INSERT INTO board(title,writer,contents,regdate,hit) VALUES(?,?,?,?,?)";//board idsms auto increment라 자동증가
+        List<BoardDTO> boardDTOS=new ArrayList<>();//dto정보저장할 리스트
+        //String insertquery = "INSERT INTO board(title,writer,contents,regdate,hit) VALUES(?,?,?,?,?)";//board idsms auto increment라 자동증가
         try{
             //Class.forName("com.mysql.jdbc.Driver");
             //Class.forName("com.mysql.cj.jdbc.Driver");
@@ -31,33 +24,40 @@ public class Main {
             conn = DriverManager.getConnection(url, "root", "root");
             conn.setAutoCommit(false);
 
-            pstmt= conn.prepareStatement(insertquery);
+           /* pstmt= conn.prepareStatement(insertquery);
             pstmt.setString(1,"preparedStatement");
             pstmt.setString(2,"kwon");
             pstmt.setString(3,"preparedStatement test2");
             pstmt.setTimestamp(4,Timestamp.valueOf(LocalDateTime.now()));
             pstmt.setInt(5,0);
             int count = pstmt.executeUpdate();//preparedstatement는 그냥 execute sql1
-            System.out.println("count = " + count);
+            System.out.println("count = " + count);*/
 
             stmt = conn.createStatement();
             rs = stmt.executeQuery(selectquery);//statment는 execute문에 query문 넣음 sql2
             while(rs.next()) {
-                String id = rs.getString("board_id");
+                BoardDTO boardDTO= new BoardDTO();//DTO객체생성해서 가져온 자료 DTO객체에 set
+                Long id = rs.getLong("board_id");
                 String title = rs.getString("title");
                 String writer = rs.getString("writer");
                 String contents = rs.getString("contents");
-                LocalDateTime regdate = rs.getTimestamp("regdate").toLocalDateTime();
+                LocalDateTime regDate = rs.getTimestamp("regdate").toLocalDateTime();
                 int hit= rs.getInt(6);
-                System.out.printf("%s | %s | %s | %s | %s | %s\n", id,title,writer,contents,regdate.toString(),hit);
-                System.out.println("-------------------------------------");
+                boardDTO.setId(id);
+                boardDTO.setTitle(title);
+                boardDTO.setWriter(writer);
+                boardDTO.setContents(contents);
+                boardDTO.setRegDate(regDate);
+                boardDTO.setHit(hit);
+                boardDTOS.add(boardDTO);//set된 boarddto 리스트저장
+               /* System.out.printf("%s | %s | %s | %s | %s | %s\n", id,title,writer,contents,regdate.toString(),hit);
+                System.out.println("-------------------------------------");*/
 
                 conn.commit();
             }
-        //} / (ClassNotFoundException e) {
-        //    e.printStackTrace();
-        //}
-        catch(SQLException e){
+        } /*catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } */catch(SQLException e){
             System.out.println("error : " + e);
             try {
                 conn.rollback();
@@ -79,6 +79,21 @@ public class Main {
             catch(SQLException e){
                 e.printStackTrace();
             }
-        }*/
+        }
+        return boardDTOS;
     }
+    //파라미터만 다름 오버로딩
+    /*public select();
+    public select(String keyword);
+    public delete();
+    public insert();
+    */
+    //싱글톤 패턴 적용시
+   /* static BoardDAO boardDAO;//인스턴스 안만들어도 static 영역올라가 클래스 사용가능
+    private BoardDAO(){//싱글톤
+    BoardDAO getInstance(){
+        return boardDAO;
+    }*/
+
+    //4개모두 connection,close 필요하므로 따로 함수 작성 혹은 객체를 공유
 }
