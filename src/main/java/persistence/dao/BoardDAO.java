@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BoardDAO {
-    private final DataSource ds= PooledDataSource.getDataSource();//dbcl객체가져옴 static 이라new 필요없음
+    private final DataSource ds= PooledDataSource.getDataSource();//dbcp객체가져옴 static 이라new 필요없음
 
     public List<BoardDTO> findAll(){
         Connection conn = null;
