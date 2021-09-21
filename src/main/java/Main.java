@@ -24,24 +24,24 @@ public class Main {
         String selectquery = "SELECT * FROM BOARD";
         String insertquery = "INSERT INTO board(title,writer,contents,regdate,hit) VALUES(?,?,?,?,?)";//board idsms auto increment라 자동증가
         try{
-            //Class.forName("com.mysql.jdbc.Driver");
-            //Class.forName("com.mysql.cj.jdbc.Driver");
-            //String url = "jdbc:mysql://localhost/mydb?characterEncoding=utf8&serverTimezone=UTC&useSSL=false";
+            //Class.forName("com.mysql.jdbc.Driver"); 구버전
+            //Class.forName("com.mysql.cj.jdbc.Driver"); 신버전 추가안해도 자동으로 추가함
+            //String url = "jdbc:mysql://localhost/mydb?characterEncoding=utf8&serverTimezone=UTC&useSSL=false"; ?뒤 옵션 &옵션추가
             String url = "jdbc:mysql://localhost/mydb";
             conn = DriverManager.getConnection(url, "root", "root");
-            conn.setAutoCommit(false);
+            conn.setAutoCommit(false);//autocommit해제
 
-            pstmt= conn.prepareStatement(insertquery);
+            pstmt= conn.prepareStatement(insertquery);//insert,update,delete문
             pstmt.setString(1,"preparedStatement");
             pstmt.setString(2,"kwon");
-            pstmt.setString(3,"preparedStatement test2");
-            pstmt.setTimestamp(4,Timestamp.valueOf(LocalDateTime.now()));
+            pstmt.setString(3,"preparedStatement test");
+            pstmt.setTimestamp(4,Timestamp.valueOf(LocalDateTime.now()));//db datetime 변수넣기
             pstmt.setInt(5,0);
             int count = pstmt.executeUpdate();//preparedstatement는 그냥 execute sql1
             System.out.println("count = " + count);
 
             stmt = conn.createStatement();
-            rs = stmt.executeQuery(selectquery);//statment는 execute문에 query문 넣음 sql2
+            rs = stmt.executeQuery(selectquery);//statment는 execute문에 query문 넣음 sql2 select문
             while(rs.next()) {
                 String id = rs.getString("board_id");
                 String title = rs.getString("title");
@@ -52,7 +52,7 @@ public class Main {
                 System.out.printf("%s | %s | %s | %s | %s | %s\n", id,title,writer,contents,regdate.toString(),hit);
                 System.out.println("-------------------------------------");
 
-                conn.commit();
+                conn.commit();//여기까지 문제없으면 commit
             }
         //} / (ClassNotFoundException e) {
         //    e.printStackTrace();
@@ -60,7 +60,7 @@ public class Main {
         catch(SQLException e){
             System.out.println("error : " + e);
             try {
-                conn.rollback();
+                conn.rollback();//err발생시 rollback
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

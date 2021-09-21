@@ -1,13 +1,17 @@
 package persistence.dao;
 
+import persistence.PooledDataSource;
 import persistence.dto.BoardDTO;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BoardDAO {
+    private final DataSource ds= PooledDataSource.getDataSource();//dbcp객체가져옴 static 이라new 필요없음
+
     public List<BoardDTO> findAll(){
         Connection conn = null;
         Statement stmt = null;
@@ -20,11 +24,12 @@ public class BoardDAO {
             //Class.forName("com.mysql.jdbc.Driver");
             //Class.forName("com.mysql.cj.jdbc.Driver");
             //String url = "jdbc:mysql://localhost/mydb?characterEncoding=utf8&serverTimezone=UTC&useSSL=false";
-            String url = "jdbc:mysql://localhost/mydb";
-            conn = DriverManager.getConnection(url, "root", "root");
+           // String url = "jdbc:mysql://localhost/mydb";
+            //conn = DriverManager.getConnection(url, "root", "root");
+            conn= ds.getConnection();
             conn.setAutoCommit(false);
 
-           /* pstmt= conn.prepareStatement(insertquery);
+           /* pstmt= conn.prepareStatement(insertquery);//prepareStatement는 pstmt문인자로 쿼리줌
             pstmt.setString(1,"preparedStatement");
             pstmt.setString(2,"kwon");
             pstmt.setString(3,"preparedStatement test2");
@@ -80,7 +85,7 @@ public class BoardDAO {
                 e.printStackTrace();
             }
         }
-        return boardDTOS;
+        return boardDTOS;//set 완료된 boardDTO 리스트 리턴
     }
     //파라미터만 다름 오버로딩
     /*public select();
