@@ -1,21 +1,43 @@
+import persistence.MyBatisconnectionFactory;
 import persistence.dao.BoardDAO;
+import persistence.dao.MyBoardDAO;
 import persistence.dto.BoardDTO;
 import service.BoardService;
 import view.BoardView;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        BoardDAO boardDAO=new BoardDAO();//이때 한번 만들고 생성 안함 유사 싱글톤방식
+        MyBoardDAO myBoardDAO=new MyBoardDAO(MyBatisconnectionFactory.getSqlSessionFactory());
+        String title = "TEST2";
+        String writer = "kim";
+        Map params = new HashMap<String, Object>();
+        params.put("title",title);
+        params.put("writer",writer);
+        List<BoardDTO> posts = myBoardDAO.findpostWithTitlelike(params);
+        System.out.println("posts.size() = " + posts.size());
+        posts.stream().forEach(p -> System.out.println(p.toString()));
+
+        /*MyBoardDAO myBoardDAO=new MyBoardDAO(MyBatisconnectionFactory.getSqlSessionFactory());//dependancy injection
+        List<BoardDTO> boardDTOS = myBoardDAO.findpostWithTitlelike("TEST3");
+        System.out.println("size"+ boardDTOS.size());
+        boardDTOS.stream().forEach(p-> System.out.println("p.toString="+p.toString()));*/
+        /*for(BoardDTO dto:boardDTOS){
+            System.out.println("dto.toString()="+dto.toString());
+        }*/
+        /*BoardDAO boardDAO=new BoardDAO();//이때 한번 만들고 생성 안함 유사 싱글톤방식
         BoardView boardView= new BoardView();
         BoardService boardService= new BoardService(boardDAO);
 
         //사용자가 controll에서 전체출력 요청한것 가정
         List<BoardDTO> all= boardService.findall();
-        boardView.printAll(all);
+        boardView.printAll(all);*///mybatis사용하며 주석처리
+
 
         /*Connection conn = null;
         Statement stmt = null;

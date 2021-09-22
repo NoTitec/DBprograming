@@ -12,10 +12,10 @@ public class PooledDataSource {//connectionpool 관리 클래스
     private static BasicDataSource basicDS;//jvm static메모리에 올라감
     static {//컴파일 시점에 메모리에 로드
         try {
-            basicDS = new BasicDataSource();//jdcp객체생성
-            Properties properties = new Properties();
+            basicDS = new BasicDataSource();//dbcp객체생성
+            Properties properties = new Properties();//설정정보 객체 주로 yml파일 사용
             //InputStream inputStream = new FileInputStream("src/main/resources/config/db.yml");//이식성문제발생
-            Class<PooledDataSource> pooledDataSourceClass = PooledDataSource.class;
+            Class<PooledDataSource> pooledDataSourceClass = PooledDataSource.class;//18,19문장 yml파일 가져옴
             InputStream inputStream = pooledDataSourceClass.getClassLoader().getResourceAsStream("config/db.yml");
             //어디에 jar파일 있던간에 실행가능
             properties.load(inputStream);// yml파일 파싱
