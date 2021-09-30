@@ -13,15 +13,39 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        MyBoardDAO myBoardDAO=new MyBoardDAO(MyBatisconnectionFactory.getSqlSessionFactory());
-        String title = "TEST2";
+        MyBoardDAO myBoardDAO=new MyBoardDAO(MyBatisconnectionFactory.getSqlSessionFactory());//mybatis 는 static생성해서 new필요없음
+
+        BoardDTO boardDTO=new BoardDTO();
+        boardDTO.setTitle("TEST2");
+        boardDTO.setWriter("me");
+        List<BoardDTO>boardDTOS=myBoardDAO.selectTitleWriterLikeAnnotation(boardDTO);
+        boardDTOS.stream().forEach(v-> System.out.println("v.tostring()="+v.toString()));
+        //다이나믹 annotation sql 1
+        /*List<BoardDTO> boardDTOS = myBoardDAO.selectresentWithAnnotation(7);
+        boardDTOS.stream().forEach(v-> System.out.println("v.="+v.toString()));*/
+        //기본 annotation select test
+        /*List<BoardDTO> boardDTOS = myBoardDAO.selectallWithAnnotation();
+        boardDTOS.stream().forEach(v-> System.out.println("v.="+v.toString()));
+        //id 로 1개 찾기
+        BoardDTO boardDTO = myBoardDAO.selectoneWithAnnotation(2l);
+        System.out.println("vo.="+boardDTO.toString());*/
+
+        /*String title = "TEST2";
         String writer = "kim";
         Map params = new HashMap<String, Object>();
         params.put("title",title);
         params.put("writer",writer);
         List<BoardDTO> posts = myBoardDAO.findpostWithTitlelike(params);
         System.out.println("posts.size() = " + posts.size());
-        posts.stream().forEach(p -> System.out.println(p.toString()));
+        posts.stream().forEach(p -> System.out.println(p.toString()));*/
+
+        /*BoardDTO nd=new BoardDTO();
+        nd.setTitle("new row");
+        nd.setWriter("me");
+        nd.setContents("wow");
+        nd.setRegDate(LocalDateTime.now());
+        nd.setHit(0);
+        myBoardDAO.insertBoard(nd);*/
 
         /*MyBoardDAO myBoardDAO=new MyBoardDAO(MyBatisconnectionFactory.getSqlSessionFactory());//dependancy injection
         List<BoardDTO> boardDTOS = myBoardDAO.findpostWithTitlelike("TEST3");

@@ -26,4 +26,10 @@
             AND writer like CONCAT('%', #{writer},'%')
         </if>
     </select>
+
+    <insert id="insertBoard" useGeneratedKeys="true" keyProperty="id">
+        insert into BOARD (title, writer, contents, regdate,hit)
+        values (#{title}, #{writer}, #{contents}, #{regDate}, #{hit})
+
+    </insert>
 </mapper>
